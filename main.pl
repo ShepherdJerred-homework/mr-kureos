@@ -19,20 +19,27 @@ open my $file, $fileName or die "Could not open $fileName: $!";
 
 my %nameMap;
 
-while( my $line = <$file>)  {
-    # TODO Look at line
-    # (?=:)(?=Mr|Mrs|Ms|Dr|Coach)*([A-Za-z ])+(?=:\/)
+while (my $line = <$file>) {
+    my $matches = $line =~ /(:[A-Za-z ]+(?=:\/))/;
+    print $matches;
+
+    $matches =~ s/Mr//;
+    $matches =~ s/Mrs//;
+    $matches =~ s/Ms//;
+    $matches =~ s/Dr//;
+    $matches =~ s/Coach//;
+
+    if (exists $nameMap{$matches}) {
+        $nameMap{$matches}++;
+    } else {
+        $nameMap{$matches} = 1;
+    }
+
     last if $. == 2;
 }
 
 close $file;
 
-
-# Search for duplicate first names
-# baber:x:502:500:Dr Steve Baber:/home/baber:/bin/bash
-
-# Count number
-# Skip titles
-
-# Output
-# Aaron occurs 3 times.
+while(my($k, $v) = each %nameMap) {
+    print($k . " occurs " . $v . " times.")
+}
