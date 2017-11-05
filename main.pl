@@ -6,7 +6,7 @@ use warnings FATAL => 'all';
 # Get file to open
 my $numberOfArguments = @ARGV - 0;
 
-if ($numberOfArguments < 3) {
+if ($numberOfArguments < 1) {
     print "Missing arguments, expected 1 but got $numberOfArguments\n";
     exit;
 }
@@ -20,26 +20,36 @@ open my $file, $fileName or die "Could not open $fileName: $!";
 my %nameMap;
 
 while (my $line = <$file>) {
-    my $matches = $line =~ /(:[A-Za-z ]+(?=:\/))/;
-    print $matches;
+    print "Line: " . $line;
 
-    $matches =~ s/Mr//;
-    $matches =~ s/Mrs//;
-    $matches =~ s/Ms//;
-    $matches =~ s/Dr//;
-    $matches =~ s/Coach//;
-
-    if (exists $nameMap{$matches}) {
-        $nameMap{$matches}++;
+    my $name;
+    if ($line =~ /(:[A-Za-z ]+(?=:\/))/) {
+        $name = $1;
     } else {
-        $nameMap{$matches} = 1;
+        next;
     }
 
-    last if $. == 2;
+    print "Match: " . $name . "\n\n";
+
+    $name =~ s/://;
+    $name =~ s/Mr //;
+    $name =~ s/Mrs //;
+    $name =~ s/Ms //;
+    $name =~ s/Dr //;
+    $name =~ s/Coach //;
+
+    if (exists $nameMap{$name}) {
+        $nameMap{$name}++;
+    } else {
+        $nameMap{$name} = 1;
+    }
+
 }
 
 close $file;
 
 while(my($k, $v) = each %nameMap) {
-    print($k . " occurs " . $v . " times.")
+    print($k . " occurs " . $v . " times. \n")
 }
+
+print "\n\n"
