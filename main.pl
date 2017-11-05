@@ -7,19 +7,25 @@ my %nameMap;
 
 foreach my $line (<STDIN>) {
     my $name;
-    if ($line =~ /(:[A-Za-z ]+(?=:\/))/) {
-        $name = $1;
-    }
-    else {
-        next;
+
+    if ($line =~ /\s\S+:[a-zA-Z]:\d+:(\d+)/) {
+        my $gid = $1;
+        if ($gid > 500) {
+            next;
+        }
     }
 
-    $name =~ s/://;
-    $name =~ s/Mr //;
-    $name =~ s/Mrs //;
-    $name =~ s/Ms //;
-    $name =~ s/Dr //;
-    $name =~ s/Coach //;
+    # Has a title before name
+    if ($line =~ /:[Dr|Mr|Coach|Mrs|Ms]* ([A-Za-z]+)/) {
+        $name = $1;
+    } else {
+        # No title before name
+        if ($line =~ /:([A-Za-z]+) /) {
+            $name = $1;
+        } else {
+            $name = "Error";
+        }
+    }
 
     if (exists $nameMap{$name}) {
         $nameMap{$name}++;
@@ -29,6 +35,6 @@ foreach my $line (<STDIN>) {
     }
 }
 
-while (my ($k, $v) = each %nameMap) {
-    print($k . " occurs " . $v . " times. \n")
+foreach my $key (sort keys %nameMap) {
+    print $key . " occurs " . $nameMap{$key} . " times. \n";
 }
