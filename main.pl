@@ -3,28 +3,14 @@
 use strict;
 use warnings FATAL => 'all';
 
-# Get file to open
-my $numberOfArguments = @ARGV - 0;
-
-if ($numberOfArguments < 1) {
-    print "Missing arguments, expected 1 but got $numberOfArguments\n";
-    exit;
-}
-
-my $fileName = $ARGV[0];
-
-# Open file
-# https://stackoverflow.com/questions/4505381/perl-read-line-by-line
-open my $file, $fileName or die "Could not open $fileName: $!";
-
 my %nameMap;
 
-while (my $line = <$file>) {
-
+foreach my $line (<STDIN>) {
     my $name;
     if ($line =~ /(:[A-Za-z ]+(?=:\/))/) {
         $name = $1;
-    } else {
+    }
+    else {
         next;
     }
 
@@ -37,14 +23,12 @@ while (my $line = <$file>) {
 
     if (exists $nameMap{$name}) {
         $nameMap{$name}++;
-    } else {
+    }
+    else {
         $nameMap{$name} = 1;
     }
-
 }
 
-close $file;
-
-while(my($k, $v) = each %nameMap) {
+while (my ($k, $v) = each %nameMap) {
     print($k . " occurs " . $v . " times. \n")
 }
