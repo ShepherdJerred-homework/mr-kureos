@@ -20,7 +20,6 @@ open my $file, $fileName or die "Could not open $fileName: $!";
 my %nameMap;
 
 while (my $line = <$file>) {
-    print "Line: " . $line;
 
     my $name;
     if ($line =~ /(:[A-Za-z ]+(?=:\/))/) {
@@ -28,8 +27,6 @@ while (my $line = <$file>) {
     } else {
         next;
     }
-
-    print "Match: " . $name . "\n\n";
 
     $name =~ s/://;
     $name =~ s/Mr //;
@@ -51,5 +48,3 @@ close $file;
 while(my($k, $v) = each %nameMap) {
     print($k . " occurs " . $v . " times. \n")
 }
-
-print "\n\n"
